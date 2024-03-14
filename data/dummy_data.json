@@ -1,0 +1,36 @@
+{
+  "_id": "65f1ae32c2755812bbe89f0b",
+  "index": 1,
+  "guid": "30cf571d-6c28-4d59-b2b9-0c27c90e4498",
+  "isActive": true,
+  "balance": "$1,668.63",
+  "picture": "http://placehold.it/32x32",
+  "age": 35,
+  "eyeColor": "blue",
+  "name": "Olivia Church",
+  "gender": "female",
+  "company": "COMTRAIL",
+  "email": "oliviachurch@comtrail.com",
+  "phone": "+1 (966) 530-2117",
+  "address": "725 Throop Avenue, Enlow, South Carolina, 2327",
+  "about": "Aliqua officia non enim minim reprehenderit. Cillum non deserunt proident fugiat nulla consequat ea nisi nisi culpa sit. Amet adipisicing anim non aliquip exercitation adipisicing deserunt proident sunt nostrud ut magna non.\r\n",
+  "registered": "2020-02-10T09:46:32 -07:00",
+  "latitude": -26.238862,
+  "longitude": -45.866779,
+  "tags": [
+    "sunt",
+    "magna",
+    "reprehenderit",
+    "anim",
+    "irure",
+    "nostrud",
+    "amet"
+  ],
+  "friends": [
+    { "id": 0, "name": "Sophie Swanson" },
+    { "id": 1, "name": "Consuelo Petersen" },
+    { "id": 2, "name": "Lorrie Hendricks" }
+  ],
+  "greeting": "Hello, Olivia Church! You have 3 unread messages.",
+  "favoriteFruit": "apple"
+}
