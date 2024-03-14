@@ -1,135 +1,142 @@
 const fs = require("fs");
 const express = require("express");
-
 const app = express();
-const PORT = 8000; // localhost:8000
+const PORT = 8000;
 
-// middleware untuk membaca json dari request body ke kita
+// middleware untuk membaca json dari request body
 app.use(express.json());
 
-const customers = JSON.parse(
-  fs.readFileSync(`${__dirname}/data/dummy_data.json`)
-);
+const customers = JSON.parse(fs.readFileSync(`${__dirname}/data/dummy_data.json`));
 
-const defaultRouter = (req, res) => {
-  res.send("<p>Halo FSW 1</p>")
-}
-
-app.get("/", defaultRouter);
-
-// api get all data
-
-// api get data by id
-app.get("/api/v1/customers/:id", (req, res, next) => {
-  const id = req.params.id;
-
-  // menggunakan array method untuk membantu menemukan spesifik data
-  const customer = customers.find((cust) => cust._id === req.params.id);
-
-  // shortcut pemanggilan object
-  // const { id } = req.params;
-  // console.log(id);
-
+const defaultRouter = (req, res, next) => {
+  res.send("<p>halo my friend</p>");
+};
+const getCustomersData = (req, res, next) => {
   res.status(200).json({
-    status: "success",
-    totalData: customers.length,
+    status: "succes",
+    totaldata: customers.length,
     data: {
       customers,
     },
   });
-});
+};
 
-// api untuk update data
-app.patch("/api/v1/customers/:id", (req, res) => {
+const getCustomersDataById = (req, res, next) => {
   const id = req.params.id;
 
-  // if(id )
+  // menggunakan array method utk membantu menemukan spesifik data
+  const customer = customers.find((cust) => cust._id === id);
 
-  // 1. melakukan pencarian data yang sesuai parameter id nya
+  // shortcut memanggil objek
+  // cont (id, name, date) = req.params;
+  // console.log(id);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      customer,
+    },
+  });
+};
+const updateCustomers = (req, res) => {
+  const id = req.params.id;
+  // if(id)
+  // 1.melakukan pencarian data
   const customer = customers.find((cust) => cust._id === id);
   const customerIndex = customers.findIndex((cust) => cust._id === id);
 
-  // 2. ada tidak data customer nya
+  // 2. ada gak datanya
   if (!customer) {
-    return res.status(404).json({
+    return res.status(404).JSON({
       status: "fail",
-      message: `id : ${id} customer tidak ditemukan`,
+      message: `custommer dengan ID : ${id} gak ada`,
     });
   }
 
-  // 3. jika ada, update data sesuai req body dari client/user
-  // object assign yaitu menggabungkan object
+  // 3. kalau ada, berarti update datanya sesuai reques body dari user
+  // object assign = menggabungkan object or spread operator
+
   customers[customerIndex] = { ...customers[customerIndex], ...req.body };
 
-  // 4. melakukan update di dokumen jsonnya
+  // 4. melakukan update di dokumennya
   fs.writeFile(
     `${__dirname}/data/dummy_data.json`,
     JSON.stringify(customers),
     (err) => {
       res.status(200).json({
-        status: "success",
-        message: "berhasil update data",
+        status: "succes",
+        message: "berhasil",
+        data: {
+          customer: customer[customerIndex],
+          customer,
+        },
       });
     }
   );
-});
-
-// api untuk delete data
-app.delete("/api/v1/customers/:id", (req, res) => {
+};
+const deletedata = (req, res) => {
   const id = req.params.id;
-
-  // 1. melakukan pencarian data yang sesuai parameter id nya
+  // if(id)
+  // 1.melakukan pencarian data
   const customer = customers.find((cust) => cust._id === id);
   const customerIndex = customers.findIndex((cust) => cust._id === id);
 
-  // 2. ada tidak data customer nya
+  // 2. ada gak datanya
   if (!customer) {
-    return res.status(404).json({
+    return res.status(404).JSON({
       status: "fail",
-      message: `id : ${id} customer tidak ditemukan`,
+      message: `custommer dengan ID : ${id} gak ada`,
     });
   }
 
-  // 3. jika ada, delete data sesuai req body dari client/user
-  // object assign yaitu menggabungkan object
+  // 3. kalau ada, berarti update datanya sesuai reques body dari user
+  // object assign = menggabungkan object or spread operator
+
+  // customers[customerIndex] = {...customers[customerIndex], ...req.body}
   customers.splice(customerIndex, 1);
 
-  // melakukan delete data
+  // 4. melakukan update di dokumennya
   fs.writeFile(
     `${__dirname}/data/dummy_data.json`,
     JSON.stringify(customers),
     (err) => {
       res.status(200).json({
-        status: "success",
-        message: "berhasil delete data",
+        status: "succes",
+        message: "data delete",
       });
     }
   );
-});
-
-// api untuk create new data
-app.post("/api/v1/customers", (req, res) => {
-  console.log(req.body);
-
+};
+const createCustomers = (req, res) => {
   const newCustomer = req.body;
-
-  customers.push(newCustomer);
-
+  customers.push(req.body);
   fs.writeFile(
     `${__dirname}/data/dummy_data.json`,
     JSON.stringify(customers),
-    (err) =>
-      res.status(200).json({
+    (err) => {
+      res.status(201).json({
         status: "success",
         data: {
           customers: newCustomer,
         },
-      })
+      });
+    }
   );
 
   res.send("oke udah");
-});
+};
+
+// localhost:3000
+app.get("/", defaultRouter);
+
+app.route("/api/v1/customers").get(getCustomersData).post(createCustomers);
+
+app
+  .route("/api/v1/customers/:id")
+  .get(getCustomersDataById)
+  .patch(updateCustomers)
+  .delete(deletedata);
 
 app.listen(PORT, () => {
-  console.log(`APP runing on port : ${PORT}`);
+  console.log(`APP running on port : ${PORT}`);
 });
